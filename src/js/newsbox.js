@@ -74,8 +74,7 @@ function getArticles(event) {
   fetch(`https://newsapi.org/v2/everything?${searchParams}`, apiRequestOption)
     .then((response) => response.json())
     .then((articles) => {
-        
-        
+              
       renderArticles(articles);
     })
     .catch(error => {
@@ -85,11 +84,11 @@ function getArticles(event) {
 
 function renderArticles(articles) {
     console.log(articles);
-    const articlesMarkup = articles.map(({ author, title, publishDate, urlToImage, url, content }) => {
+    const markup = articles.map(({author, title, publishedAt, urlToImage, url, content }) => {
       return `
         <article class="article">
           <h2 class="article__title">${title}</h2>
-          <div class="article__publish-date">${publishDate}</div>
+          <div class="article__publish-date">${publishedAt}</div>
           <div class="article__author">${author}</div>
           {{#if urlToImage}}
           <figure class="article__image">
@@ -109,5 +108,7 @@ function renderArticles(articles) {
       `;
     }).join('');
 
-  refs.articles.innerHTML = markupArticles;
+    refs.articles.innerHTML = markup;
 }
+
+
