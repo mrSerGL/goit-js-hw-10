@@ -81,6 +81,7 @@ function getArticles(event) {
     })
     .catch(error => {
       console.error(error);
+      alert(error);
     });
 }
 
