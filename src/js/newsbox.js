@@ -1,5 +1,8 @@
 import '../css/newsbox.scss';
 import moment from 'moment';
+import NewsBoxApiService from './service/newsbox-service';
+
+const newsBoxApiService = new NewsBoxApiService();
 
 // розмітка формі
 const markup = `
@@ -39,79 +42,66 @@ sectionNewsBox.innerHTML = markup;
 
 // елементи DOM
 const refs = {
-  search: document.querySelector('.news-app .search'),
+  searchForm: document.querySelector('.news-app .search'),
   articles: document.querySelector('.news-app .articles'),
   input: document.querySelector('.search__field'),
 };
 
 // слухачі
-refs.search.addEventListener('submit', getArticles);
-refs.input.addEventListener('input', updateSearchParams);
-
-// опциї запросу даніх
-const apiRequestOption = {
-  headers: {
-    Authorization: '66d6286bb5fe47b4aee06cc789798941',
-  },
-};
-
-// значення та парамети пошуку
-let whatToLookFor;
-
-function updateSearchParams() {
-  whatToLookFor = refs.input.value;
-}
+refs.searchForm.addEventListener('submit', getArticles);
 
 // відправка і повернення даних
+
 function getArticles(event) {
   event.preventDefault();
 
-  const searchParams = new URLSearchParams({
-    q: whatToLookFor,
-    sortBy: 'publishedAt',
-    pageSize: 10,
-  });
+  newsBoxApiService.query = event.currentTarget.elements.search.value;
 
-  fetch(`https://newsapi.org/v2/everything?${searchParams}`, apiRequestOption)
-    .then(response => response.json())
-    .then(articles => {
-        // console.log(articles.articles);
-        
-      renderArticles(articles);
-    })
-    .catch(error => {
-      console.error(error);
-      alert(error);
-    });
+  newsBoxApiService.fetchArticles().then(articles => renderArticles(articles));
+}
+
+function onLoadMore() {
+  newsBoxApiService.fetchArticles().then();
 }
 
 function renderArticles(articles) {
-    console.log(articles.articles);
-    const markup = articles.articles
-    .map(({ author, title, publishedAt, urlToImage, url, content, description
-    }) => {
-      return `
+  console.log(articles);
+  const markup = articles
+    .map(
+      ({
+        author,
+        title,
+        publishedAt,
+        urlToImage,
+        url,
+        content,
+        description,
+      }) => {
+        return `
         <article class="article">
           <h2 class="article__title">${title}</h2>
+
           <div class="article__publish-date">
-              ${moment(publishedAt).format ('l')}
+              ${moment(publishedAt).format('l')}
           </div>
+
           <div class="article__author">
               ${author}
           </div>
+
           <figure class="article__image">
               <img src="${urlToImage}" alt="article-image">
           </figure>
+
           <div class="article__content">
-             ${description             }
+             ${description}
              <a href="${url}" target="_blank">read more</a>
           </div>
-         <div class="article__time-for-reading">
-             //{{timeForReading}} for reading
-         </div>
+
          </article>
       `;
-    })
+      }
+    )
     .join('');
 
   refs.articles.innerHTML = markup;
