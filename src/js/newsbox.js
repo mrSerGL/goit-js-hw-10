@@ -1,4 +1,5 @@
 import '../css/newsbox.scss';
+import moment from 'moment';
 
 // розмітка формі
 const markup = `
@@ -72,9 +73,10 @@ function getArticles(event) {
   });
 
   fetch(`https://newsapi.org/v2/everything?${searchParams}`, apiRequestOption)
-    .then((response) => response.json())
-    .then((articles) => {
-              
+    .then(response => response.json())
+    .then(articles => {
+        // console.log(articles.articles);
+        
       renderArticles(articles);
     })
     .catch(error => {
@@ -83,32 +85,33 @@ function getArticles(event) {
 }
 
 function renderArticles(articles) {
-    console.log(articles);
-    const markup = articles.map(({author, title, publishedAt, urlToImage, url, content }) => {
+    console.log(articles.articles);
+    const markup = articles.articles
+    .map(({ author, title, publishedAt, urlToImage, url, content, description
+    }) => {
       return `
         <article class="article">
           <h2 class="article__title">${title}</h2>
-          <div class="article__publish-date">${publishedAt}</div>
-          <div class="article__author">${author}</div>
-          {{#if urlToImage}}
-          <figure class="article__image">
-            <img src="${urlToImage}" alt="article-image">
-          </figure>
-          {{/if}}
-          <div class="article__content">
-            {{#if text}}
-              ${content}
-            {{/if}}
-            <a href="${url}" target="_blank">read more</a>
+          <div class="article__publish-date">
+              ${moment(publishedAt).format ('l')}
           </div>
-          {{#if timeForReading}}
-            <div class="article__time-for-reading">{{timeForReading}} for reading</div>
-          {{/if}} 
-        </article>
+          <div class="article__author">
+              ${author}
+          </div>
+          <figure class="article__image">
+              <img src="${urlToImage}" alt="article-image">
+          </figure>
+          <div class="article__content">
+             ${description             }
+             <a href="${url}" target="_blank">read more</a>
+          </div>
+         <div class="article__time-for-reading">
+             //{{timeForReading}} for reading
+         </div>
+         </article>
       `;
-    }).join('');
+    })
+    .join('');
 
-    refs.articles.innerHTML = markup;
+  refs.articles.innerHTML = markup;
 }
-
-
