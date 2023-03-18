@@ -10,7 +10,6 @@ const countriesApiService = new CountriesApiService();
 const refs = {
   inputField: document.querySelector('#search-box'),
   countryList: document.querySelector('.country-list'),
-
 };
 
 refs.inputField.addEventListener(
@@ -37,20 +36,21 @@ function checkReceivedData(countries) {
     Notify.info('Too many matches found. Please enter a more specific name');
   }
   console.log(countries);
-  console.log(typeof countries);
 }
 
 function createMarkup(countries) {
-const markup = `<li>
-<img class="flag" width="20px" height="20px" src="https://flagcdn.com/ua.svg" alt="">
-<span class="name" >Ukraine</span>
-</li>`;
+  refs.countryList.innerHTML = '';
 
-refs.countryList.innerHTML = "";
+  const markup = countries
+  .map((country, index) => {
+    const { flags, name} = countries[index];
 
-  countries.map(country =>{
-   
-    refs.countryList.insertAdjacentHTML("beforeend", markup);
-  })
+    return `<li>
+    <img class="flag" width="20px" height="20px" src="${flags.svg}" alt="">
+    <span class="name" >${name.common}</span>
+    </li>`;
+  }
+  ).join('');
 
+  refs.countryList.innerHTML = markup;
 }
