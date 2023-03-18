@@ -1,3 +1,5 @@
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
+
 export default class CountriesApiService {
   constructor() {
     this.name = '';
@@ -13,7 +15,9 @@ export default class CountriesApiService {
         return data;
       })
       .catch(error => {
-        console.error(error);
+      
+        // Notify.failure('Oops, there is no country with that name');
+        // console.error(error);
         //   alert(error);
       });
   }
