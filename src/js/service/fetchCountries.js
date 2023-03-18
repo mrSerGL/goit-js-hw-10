@@ -15,8 +15,7 @@ export default class CountriesApiService {
         return data;
       })
       .catch(error => {
-      console.error(error);
-      //   alert(error);
+      console.error('fetchCountries:',error)
       });
   }
 
