@@ -6,7 +6,7 @@ export default class CountriesApiService {
   }
 
   fetchCountries(name) {
-    // console.log('from import',this.name);
+ 
     return fetch(
       `https://restcountries.com/v3.1/name/${this.name}?fields=name,capital,population,flags,languages`
     )
@@ -15,10 +15,8 @@ export default class CountriesApiService {
         return data;
       })
       .catch(error => {
-      
-        // Notify.failure('Oops, there is no country with that name');
-        // console.error(error);
-        //   alert(error);
+      console.error(error);
+      //   alert(error);
       });
   }
 
