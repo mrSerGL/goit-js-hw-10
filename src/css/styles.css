@@ -19,3 +19,9 @@ body {
   max-width: 320px;
   margin-bottom: 16px;
 }
+
+.country-info .name {
+  margin-left: 20px;
+  font-size: 40px;
+
+}
