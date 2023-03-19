@@ -16,9 +16,22 @@ const refs = {
 refs.inputField.addEventListener(
   'input',
   debounce(event => {
+    validateInput(refs.inputField.value);
+
+    if (refs.inputField.value < 1) {
+      refs.countryList.innerHTML = '';
+      return
+    }
     getCountriesInfo(event);
   }, DEBOUNCE_DELAY)
 );
+
+function validateInput(inputValue) {
+  const regex = /^\s/;
+  if (regex.test(inputValue)) {
+    refs.inputField.value = '';
+  }
+}
 
 function getCountriesInfo(event) {
   countriesApiService.query = event.target.value.trim();
@@ -43,13 +56,13 @@ function checkReceivedData(countries) {
   if (countries.status === 404) {
     Notify.failure('Oops, there is no country with that name');
   } else if (foundCountries > 10) {
+    refs.countryList.innerHTML = '';
     Notify.info('Too many matches found. Please enter a more specific name');
   } else if (foundCountries === 1) {
     refs.countryList.innerHTML = '';
     createCountryInfo(countries);
   }
   console.log(countries);
-  
 }
 
 function createMarkup(countries) {
@@ -72,13 +85,17 @@ function createMarkup(countries) {
 function createCountryInfo(countries) {
   const { flags, name, capital, population, languages } = countries[0];
 
-  const markup = `<img class="flag" width="35px" height="35px" src="${flags.svg}" alt="">
+  const markup = `<img class="flag" width="35px" height="35px" src="${
+    flags.svg
+  }" alt="">
   <span class="name" >${name.common}</span>
 
    <ul>
     <li><span class="title">Capital:</span><span class="title_info">${capital}</span></li>
     <li><span class="title">Population:</span><span class="title_info">${population}</span></li>
-    <li><span class="title">Languages:</span><span class="title_info">${Object.values(languages)}</span></li>
+    <li><span class="title">Languages:</span><span class="title_info">${Object.values(
+      languages
+    )}</span></li>
   </ul>`;
 
   refs.countryInfo.innerHTML = markup;

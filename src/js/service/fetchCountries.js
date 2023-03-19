@@ -8,7 +8,7 @@ export default class CountriesApiService {
   fetchCountries(name) {
  
     return fetch(
-      `https://restcountries.com/v3.1/name/${this.name}?fields=name,capital,population,flags,languages`
+      `https://restcountries.com/v3.1/name/${this.name.trim()}?fields=name,capital,population,flags,languages`
     )
       .then(response => response.json())
       .then(data => {
