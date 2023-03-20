@@ -110,12 +110,15 @@ function createCountryInfo(countries) {
 
 function clicks(event) {
   console.log(event.currentTarget)
+
+  const countryName = event.target.querySelector('.name').textContent;
+  console.log(countryName);
  };
 
 function onCountryListItem() {
  const countryListItem = document.querySelector('.country__list-item');
  countryListItem.addEventListener('click', clicks);
- };
+};
 
 
 
