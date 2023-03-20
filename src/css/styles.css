@@ -45,6 +45,11 @@ li {
 margin-left: 10px;
 }
 
+.country__list-item :hover{
+  font-weight: 400;
+
+}
+
 .title{
   font-weight: 600;
 }

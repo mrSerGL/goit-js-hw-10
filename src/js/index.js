@@ -11,6 +11,7 @@ const refs = {
   inputField: document.querySelector('#search-box'),
   countryList: document.querySelector('.country-list'),
   countryInfo: document.querySelector('.country-info'),
+  countryList: document.querySelector('.country-list'),
 };
 
 refs.inputField.addEventListener(
@@ -20,7 +21,7 @@ refs.inputField.addEventListener(
 
     if (refs.inputField.value < 1) {
       refs.countryList.innerHTML = '';
-      return
+      return;
     }
     getCountriesInfo(event);
   }, DEBOUNCE_DELAY)
@@ -39,9 +40,8 @@ function getCountriesInfo(event) {
     .fetchCountries()
     .then(countries => {
       createMarkup(countries);
-      
+
       checkReceivedData(countries);
-      
     })
     .catch(error => {
       Notify.failure('Oops, there is no country with that name');
@@ -65,7 +65,6 @@ function checkReceivedData(countries) {
     createCountryInfo(countries);
   }
   console.log(countries);
-  
 }
 
 function createMarkup(countries) {
@@ -87,6 +86,8 @@ function createMarkup(countries) {
 }
 
 function createCountryInfo(countries) {
+  console.log(countries);
+  refs.countryList.innerHTML = '';
   const { flags, name, capital, population, languages } = countries[0];
 
   const markup = `<img class="flag" width="35px" height="35px" src="${
@@ -105,21 +106,26 @@ function createCountryInfo(countries) {
   refs.countryInfo.innerHTML = markup;
 }
 
-
 function onCountryListItem() {
- const countryList = document.querySelector('.country-list');
- countryList.addEventListener('click', clicks);
-
-};
+  refs.countryList.addEventListener('click', clicks);
+}
 
 function clicks(event) {
   const countryName = event.target.textContent;
-  console.log(countryName);
-  countriesApiService.fetchCountries(countryName);
- };
 
+  if (countryName) {
+    countriesApiService.query = countryName;
 
+    countriesApiService
+      .fetchCountries(countryName)
+      .then(data => {
+        createCountryInfo(data);
+      })
+      .catch(error => {
+        console.log(error);
+      });
 
-
-
-
+    refs.inputField.value = '';
+    refs.countryList.removeEventListener('click', clicks);
+  }
+}
