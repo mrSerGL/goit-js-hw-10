@@ -39,7 +39,9 @@ function getCountriesInfo(event) {
     .fetchCountries()
     .then(countries => {
       createMarkup(countries);
+      
       checkReceivedData(countries);
+      
     })
     .catch(error => {
       Notify.failure('Oops, there is no country with that name');
@@ -63,6 +65,7 @@ function checkReceivedData(countries) {
     createCountryInfo(countries);
   }
   console.log(countries);
+  
 }
 
 function createMarkup(countries) {
@@ -72,7 +75,7 @@ function createMarkup(countries) {
     .map((country, index) => {
       const { flags, name } = countries[index];
 
-      return `<li>
+      return `<li class="country__list-item">
     <img class="flag" width="25px" height="25px" src="${flags.svg}" alt="">
     <span class="name" >${name.common}</span>
     </li>`;
@@ -80,6 +83,8 @@ function createMarkup(countries) {
     .join('');
 
   refs.countryList.innerHTML = markup;
+  onCountryListItem();
+
 }
 
 function createCountryInfo(countries) {
@@ -100,3 +105,19 @@ function createCountryInfo(countries) {
 
   refs.countryInfo.innerHTML = markup;
 }
+
+
+
+function clicks(event) {
+  console.log(event.currentTarget)
+ };
+
+function onCountryListItem() {
+ const countryListItem = document.querySelector('.country__list-item');
+ countryListItem.addEventListener('click', clicks);
+ };
+
+
+
+
+
