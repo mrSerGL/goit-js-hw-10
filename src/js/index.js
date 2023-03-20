@@ -84,7 +84,6 @@ function createMarkup(countries) {
 
   refs.countryList.innerHTML = markup;
   onCountryListItem();
-
 }
 
 function createCountryInfo(countries) {
@@ -107,18 +106,18 @@ function createCountryInfo(countries) {
 }
 
 
+function onCountryListItem() {
+ const countryList = document.querySelector('.country-list');
+ countryList.addEventListener('click', clicks);
+
+};
 
 function clicks(event) {
-  console.log(event.currentTarget)
-
-  const countryName = event.target.querySelector('.name').textContent;
+  const countryName = event.target.textContent;
   console.log(countryName);
+  countriesApiService.fetchCountries(countryName);
  };
 
-function onCountryListItem() {
- const countryListItem = document.querySelector('.country__list-item');
- countryListItem.addEventListener('click', clicks);
-};
 
 
 
