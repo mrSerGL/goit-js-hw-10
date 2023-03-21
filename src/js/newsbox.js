@@ -133,6 +133,7 @@ function renderArticles(articles) {
           <div class="article__content">
              ${description}
              <a href="${url}" target="_blank">read more</a>
+             <span> - time of reading average ${timeOfReading(content)} min.</span>
           </div>
 
          </article>
@@ -143,3 +144,15 @@ function renderArticles(articles) {
 
   refs.articles.innerHTML = markup;
 }
+
+
+function timeOfReading(content) {
+;
+  const start = content.indexOf("[");
+  const end = content.indexOf("]");
+  const result = Math.ceil(Number.parseInt(content.substring(start + 1, end))/1500);
+  return result
+  
+ };
+
+
