@@ -33,7 +33,7 @@ const markup = `
   </div>
 
   <section class="load-more">
-    <button class="load-more-btn" hidden>More</button>
+    <button class="load-more__btn hidden">More</button>
   </section>
 </section>
 `;
@@ -45,27 +45,64 @@ const refs = {
   searchForm: document.querySelector('.news-app .search'),
   articles: document.querySelector('.news-app .articles'),
   input: document.querySelector('.search__field'),
+  moreButton: document.querySelector('.load-more__btn'),
 };
+
+// some defaults definitions
+let firstPageOfArticles = [];
+refs.moreButton.disabled = true;
 
 // слухачі
 refs.searchForm.addEventListener('submit', getArticles);
+refs.moreButton.addEventListener('click', onLoadMore);
 
 // відправка і повернення даних
-
 function getArticles(event) {
   event.preventDefault();
 
   newsBoxApiService.query = event.currentTarget.elements.search.value;
+  newsBoxApiService.pageParam = 1;
+  firstPageOfArticles = [];
 
-  newsBoxApiService.fetchArticles().then(articles => renderArticles(articles));
+  newsBoxApiService
+    .fetchArticles()
+
+    .then(articles => {
+      firstPageOfArticles = articles;
+      toggleMoreButton(articles);
+      renderArticles(articles);
+    });
 }
 
+//  button status
+function toggleMoreButton(articles) {
+  if (articles.length > 0) {
+    refs.moreButton.classList.remove('hidden');
+    refs.moreButton.disabled = false;
+  } else {
+    refs.moreButton.classList.add('hidden');
+    refs.moreButton.disabled = true;
+  }
+}
+
+// additional news
 function onLoadMore() {
-  newsBoxApiService.fetchArticles().then();
+  refs.moreButton.classList.add('loading');
+
+  newsBoxApiService.pageParam += 1;
+
+  newsBoxApiService
+    .fetchArticles(newsBoxApiService.whatToLookFor)
+    .then(articles => {
+      firstPageOfArticles = [...firstPageOfArticles, ...articles];
+      renderArticles(firstPageOfArticles);
+      toggleMoreButton(articles);
+    });
 }
 
 function renderArticles(articles) {
   console.log(articles);
+  toggleMoreButton(articles);
   const markup = articles
     .map(
       ({

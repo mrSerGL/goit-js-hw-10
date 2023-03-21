@@ -1,6 +1,7 @@
 export default class NewsBoxApiService {
   constructor() {
     this.whatToLookFor = '';
+    this.pageParam = 1;
   }
   fetchArticles(whatToLookFor) {
     const apiRequestOption = {
@@ -12,7 +13,8 @@ export default class NewsBoxApiService {
     const searchParams = new URLSearchParams({
       q: this.whatToLookFor,
       sortBy: 'publishedAt',
-      pageSize: 20,
+      pageSize: 5,
+      page: this.pageParam,
     });
 
     return fetch(
