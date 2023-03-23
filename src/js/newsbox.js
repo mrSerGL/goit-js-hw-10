@@ -33,7 +33,7 @@ const markup = `
   </div>
 
   <section class="load-more">
-    <button class="load-more__btn hidden">More</button>
+    <button class="load-more__btn hidden_on">More</button>
   </section>
 </section>
 `;
@@ -71,16 +71,17 @@ function getArticles(event) {
       firstPageOfArticles = articles;
       toggleMoreButton(articles);
       renderArticles(articles);
+      infinityLoading();
     });
 }
 
 //  button status
 function toggleMoreButton(articles) {
   if (articles.length > 0) {
-    refs.moreButton.classList.remove('hidden');
+    refs.moreButton.classList.remove('hidden_on');
     refs.moreButton.disabled = false;
   } else {
-    refs.moreButton.classList.add('hidden');
+    refs.moreButton.classList.add('hidden_on');
     refs.moreButton.disabled = true;
   }
 }
@@ -96,7 +97,7 @@ function onLoadMore() {
     .then(articles => {
       firstPageOfArticles = [...firstPageOfArticles, ...articles];
       renderArticles(firstPageOfArticles);
-      toggleMoreButton(articles);
+      // toggleMoreButton(articles);
     });
 }
 
@@ -133,7 +134,9 @@ function renderArticles(articles) {
           <div class="article__content">
              ${description}
              <a href="${url}" target="_blank">read more</a>
-             <span> - time of reading average ${timeOfReading(content)} min.</span>
+             <span> ... time of reading average ${timeOfReading(
+               content
+             )} min.</span>
           </div>
 
          </article>
@@ -145,14 +148,25 @@ function renderArticles(articles) {
   refs.articles.innerHTML = markup;
 }
 
-
 function timeOfReading(content) {
-;
-  const start = content.indexOf("[");
-  const end = content.indexOf("]");
-  const result = Math.ceil(Number.parseInt(content.substring(start + 1, end))/1500);
-  return result
-  
- };
+  const start = content.indexOf('[');
+  const end = content.indexOf(']');
+  const result = Math.ceil(
+    Number.parseInt(content.substring(start + 1, end)) / 1500
+  );
+  return result;
+}
 
+function infinityLoading() {
+  const observer = new IntersectionObserver(entries => {
+    for (const entry of entries) {
+      console.log(entry.isIntersecting);
+      if (entry.isIntersecting) {
+        onLoadMore();
+      }
+    }
+  }, {});
+  observer.observe(refs.moreButton);
 
+  refs.moreButton.classList.add('hidden_on');
+}
